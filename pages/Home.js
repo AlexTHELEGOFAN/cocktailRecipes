@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-export default function App() {
+export default function Home() {
   const [cocktailsList, setCocktailsList] = useState([]);
 
   const fetchCocktails = async () => {
     await fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?f=a`)
       .then((response) => response.json())
       .then((response) => {
-        // response.drinks[0].idDrink;
+        response.drinks[0].idDrink;
 
         // console.log(response.drinks[0]);
         setCocktailsList(response.drinks);
@@ -56,8 +57,8 @@ export default function App() {
               </View>
 
               <Text style={[styles.textDesc, { marginBottom: 10 }]}>
-                {data.strAlcoholic === "Alcoholic"
-                  ? "This cocktail contains alcohol"
+                {data.strAlcoholic === 'Alcoholic'
+                  ? 'This cocktail contains alcohol'
                   : "This cocktail doesn't contains alcohol"}
               </Text>
 
@@ -74,7 +75,7 @@ export default function App() {
 
               {ingredients.map((ingredient, index) => (
                 <Text key={index} style={styles.textDesc}>
-                  {"-"}
+                  {'-'}
                   {ingredient}
                 </Text>
               ))}
@@ -95,13 +96,13 @@ export default function App() {
 const styles = StyleSheet.create({
   viewContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#161b1d",
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#161b1d',
   },
 
   textTitle: {
-    color: "#ff9f31",
+    color: '#ff9f31',
     fontSize: 24,
     marginTop: 20,
     marginBottom: 20,
@@ -112,16 +113,16 @@ const styles = StyleSheet.create({
   },
 
   viewAttribute: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 
   textAttribute: {
     marginRight: 10,
-    color: "#05a6c3",
+    color: '#05a6c3',
   },
 
   textDesc: {
-    color: "#fafafa",
+    color: '#fafafa',
   },
 });
