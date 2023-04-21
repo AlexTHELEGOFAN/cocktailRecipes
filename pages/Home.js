@@ -1,17 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { StyleSheet } from 'react-native';
-import Details from './Details';
 
 export default function Home() {
   const [cocktailsList, setCocktailsList] = useState([]);
 
   const navigation = useNavigation();
-
-  const handlePress = (idDrink) => {
-    navigation.navigate('Details', { cocktailId: idDrink });
-  };
 
   const fetchCocktails = async () => {
     try {
@@ -28,8 +23,6 @@ export default function Home() {
       console.error(error);
     }
   };
-
-  // console.log(cocktailsList[0]?.thumbnail);
 
   useEffect(() => {
     fetchCocktails();
@@ -52,8 +45,6 @@ export default function Home() {
             }
           }
 
-          // console.log(data.idDrink);
-
           return (
             <View key={index} style={styles.viewCocktail}>
               <View style={[styles.viewAttribute, { paddingLeft: 28 }]}>
@@ -65,7 +56,13 @@ export default function Home() {
                 </Text>
               </View>
 
-              <TouchableOpacity onPress={() => handlePress(data.idDrink)}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('Details', {
+                    cocktailId: data.idDrink,
+                  })
+                }
+              >
                 <View
                   style={[
                     styles.viewCenter,
@@ -90,45 +87,6 @@ export default function Home() {
                 <Text style={styles.textAttribute}>Last updated :</Text>
                 <Text style={styles.textDesc}>{data.dateModified}</Text>
               </View>
-
-              {/* <Text
-                style={[styles.textDesc, { marginBottom: 10, paddingLeft: 28 }]}
-              >
-                {data.strAlcoholic === 'Alcoholic'
-                  ? 'This cocktail contains alcohol'
-                  : "This cocktail doesn't contains alcohol"}
-              </Text>
-
-              <View
-                style={[
-                  styles.viewAttribute,
-                  { marginBottom: 10, paddingLeft: 28 },
-                ]}
-              >
-                <Text style={styles.textAttribute}>Drink category :</Text>
-                <Text style={styles.textDesc}>{data.strCategory}</Text>
-              </View>
-
-              <Text
-                style={[styles.textDesc, { marginBottom: 10, paddingLeft: 28 }]}
-              >
-                This cocktail is traditionally served in a {data.strGlass}
-              </Text>
-
-              <Text style={styles.textAttribute}>Ingredients :</Text>
-
-              {ingredients.map((ingredient, index) => (
-                <Text key={index} style={styles.textDesc}>
-                  {'-'}
-                  {ingredient}
-                </Text>
-              ))}
-
-              <Text style={[styles.textAttribute, { marginTop: 10 }]}>
-                Recipe :
-              </Text>
-
-              <Text style={styles.textDesc}>{data.strInstructions}</Text> */}
             </View>
           );
         })}
