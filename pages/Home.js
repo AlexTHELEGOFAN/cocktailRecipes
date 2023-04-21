@@ -1,23 +1,35 @@
+import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { StyleSheet } from 'react-native';
+import Details from './Details';
 
 export default function Home() {
   const [cocktailsList, setCocktailsList] = useState([]);
 
-  const fetchCocktails = async () => {
-    await fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?f=a`)
-      .then((response) => response.json())
-      .then((response) => {
-        response.drinks[0].idDrink;
+  const navigation = useNavigation();
 
-        // console.log(response.drinks[0]);
-        setCocktailsList(response.drinks);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const handlePress = (idDrink) => {
+    navigation.navigate('Details', { cocktailId: idDrink });
   };
+
+  const fetchCocktails = async () => {
+    try {
+      const response = await fetch(
+        'https://www.thecocktaildb.com/api/json/v1/1/search.php?f=a'
+      );
+      const data = await response.json();
+      const drinks = data.drinks.map((drink) => ({
+        ...drink,
+        thumbnail: `${drink.strDrinkThumb}/preview`,
+      }));
+      setCocktailsList(drinks);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // console.log(cocktailsList[0]?.thumbnail);
 
   useEffect(() => {
     fetchCocktails();
@@ -40,9 +52,11 @@ export default function Home() {
             }
           }
 
+          // console.log(data.idDrink);
+
           return (
             <View key={index} style={styles.viewCocktail}>
-              <View style={styles.viewAttribute}>
+              <View style={[styles.viewAttribute, { paddingLeft: 28 }]}>
                 <Text style={[styles.textAttribute, { fontSize: 24 }]}>
                   Cocktail name :
                 </Text>
@@ -51,23 +65,53 @@ export default function Home() {
                 </Text>
               </View>
 
-              <View style={[styles.viewAttribute, { marginBottom: 10 }]}>
+              <TouchableOpacity onPress={() => handlePress(data.idDrink)}>
+                <View
+                  style={[
+                    styles.viewCenter,
+                    { paddingTop: 20, paddingBottom: 20 },
+                  ]}
+                >
+                  <Image
+                    source={{
+                      uri: `${data.thumbnail}`,
+                    }}
+                    style={{ width: 250, height: 250 }}
+                  />
+                </View>
+              </TouchableOpacity>
+
+              <View
+                style={[
+                  styles.viewAttribute,
+                  { marginBottom: 10, paddingLeft: 28 },
+                ]}
+              >
                 <Text style={styles.textAttribute}>Last updated :</Text>
                 <Text style={styles.textDesc}>{data.dateModified}</Text>
               </View>
 
-              <Text style={[styles.textDesc, { marginBottom: 10 }]}>
+              {/* <Text
+                style={[styles.textDesc, { marginBottom: 10, paddingLeft: 28 }]}
+              >
                 {data.strAlcoholic === 'Alcoholic'
                   ? 'This cocktail contains alcohol'
                   : "This cocktail doesn't contains alcohol"}
               </Text>
 
-              <View style={[styles.viewAttribute, { marginBottom: 10 }]}>
+              <View
+                style={[
+                  styles.viewAttribute,
+                  { marginBottom: 10, paddingLeft: 28 },
+                ]}
+              >
                 <Text style={styles.textAttribute}>Drink category :</Text>
                 <Text style={styles.textDesc}>{data.strCategory}</Text>
               </View>
 
-              <Text style={[styles.textDesc, { marginBottom: 10 }]}>
+              <Text
+                style={[styles.textDesc, { marginBottom: 10, paddingLeft: 28 }]}
+              >
                 This cocktail is traditionally served in a {data.strGlass}
               </Text>
 
@@ -84,7 +128,7 @@ export default function Home() {
                 Recipe :
               </Text>
 
-              <Text style={styles.textDesc}>{data.strInstructions}</Text>
+              <Text style={styles.textDesc}>{data.strInstructions}</Text> */}
             </View>
           );
         })}
@@ -106,6 +150,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginTop: 20,
     marginBottom: 20,
+  },
+
+  viewCenter: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   viewCocktail: {
